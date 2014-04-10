@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
@@ -48,6 +49,10 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
     public sealed class QuantifiedDevVisualStudioExtensionPackage : Package
     {
         private bool buildSucceeded;
+        private double latitude;
+        private double longitude;
+        private bool isOn;
+        private string context = "QuantifiedDev";
 
         /// <summary>
         /// Default constructor of the package.
@@ -93,6 +98,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         /// </summary>
         protected override void Initialize()
         {
+            isOn = true;
             Debug.WriteLine (CultureInfo.CurrentCulture.ToString(), "Entering Initialize() of: {0}", this);
             base.Initialize();
 
@@ -128,11 +134,13 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             var uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
             Guid clsid = Guid.Empty;
             int result;
+            var lat = latitude;
+            var @long = longitude;
             ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
                        0,
                        ref clsid,
                        "QuantifiedDevVisualStudioExtension",
-                       string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", ToString()),
+                       string.Format(CultureInfo.CurrentCulture, "Quantified dev is enabled, your lat/long is {0},{1}. If this is wrong please go to view>other windows>quantified dev and enter the correct location", lat, @long),
                        string.Empty,
                        0,
                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
@@ -152,6 +160,9 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             {
                 CreateStream();
             }
+
+            GetLatLong();
+            
 
             var dte = (DTE)GetService(typeof(DTE));
             dte.Events.BuildEvents.OnBuildBegin += (scope, action) =>
@@ -175,14 +186,66 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                 Debug.WriteLine(platform, context);
                 Debug.WriteLine(solutionConfig, context);
                 Debug.WriteLine(success, context);
-                buildSucceeded &= success;
+                buildSucceeded &= success;  
             };
 
 
         }
 
-        private static void SendBuildEvent(string context, vsBuildScope scope, vsBuildAction action, object[] actionTags, JObject properties)
+        private void GetLatLong()
         {
+            if (Settings.Default.Latitude != 0 || Settings.Default.Longitude != 0)
+            {
+                latitude = Settings.Default.Latitude;
+                longitude = Settings.Default.Longitude;
+                return;
+            }
+           
+            if (isOn == false)
+                return;
+
+            HttpClient client = new HttpClient();
+            var url = string.Format("http://freegeoip.net/json");
+
+            client.GetAsync(url).ContinueWith(postTask =>
+            {
+                try
+                {
+                    HttpResponseMessage result = postTask.Result;
+                    if (result.StatusCode != HttpStatusCode.OK)
+                    {
+                        isOn = false;
+                        return;
+                    }
+
+                    result.Content.ReadAsStringAsync().ContinueWith(bodyContent =>
+                    {
+                        if (bodyContent.IsCompleted == false)
+                        {
+                            return;
+                        }
+
+                        var location = JObject.Parse(bodyContent.Result);
+                        latitude = double.Parse(location["latitude"].ToString());
+                        longitude = double.Parse(location["longitude"].ToString());
+                        Settings.Default.Latitude = latitude;
+                        Settings.Default.Longitude = longitude;
+                        Settings.Default.Save();
+                    });
+                }
+                catch (Exception)
+                {
+                    WriteToOutput("Couldn't get lat and long automatically");
+                    isOn = false;
+                }
+            });
+        }
+
+        private void SendBuildEvent(string context, vsBuildScope scope, vsBuildAction action, object[] actionTags, JObject properties)
+        {
+            if (isOn == false)
+                return;
+
             var buildActionName = actionTags[0] + " " + actionTags[1];
             Debug.WriteLine(buildActionName, context);
 
@@ -194,10 +257,13 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             var buildEvent = new JObject();
             buildEvent["dateTime"] = DateTime.UtcNow.ToString("o");
 
-            var location = new JObject();
-            location["lat"] = 52;
-            location["long"] = 0;
+            var location = new JObject(); 
+            location["lat"] = latitude;
+            location["long"] = longitude; 
             buildEvent["location"] = location;
+
+
+
 
             buildEvent["actionTags"] = new JArray(actionTags);
             buildEvent["objectTags"] = new JArray(new object[] { "Computer", "Software" });
@@ -212,21 +278,63 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
             client.PostAsync(url, content).ContinueWith(postTask =>
             {
-                Debug.WriteLine(postTask.Result.StatusCode.ToString(), context, buildActionName);
-                Debug.WriteLine(scope.ToString(), context, buildActionName);
-                Debug.WriteLine(action.ToString(), context, buildActionName);
+                try
+                {
+                    Debug.WriteLine(postTask.Result.StatusCode.ToString(), context, buildActionName);
+                    Debug.WriteLine(scope.ToString(), context, buildActionName);
+                    Debug.WriteLine(action.ToString(), context, buildActionName);
+                }
+                catch (Exception)
+                {
+                    WriteToOutput("QuantifiedDev: Couldn't send build event");                           
+                }
+                   
             });
         }
 
-        private static void CreateStream()
+        private void WriteToOutput(string message)
+        {
+            Debug.WriteLine(message, context);
+            Console.WriteLine(message, context);
+            IVsOutputWindow outputWindow =
+        Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+
+            Guid guidGeneral = Microsoft.VisualStudio.VSConstants.OutputWindowPaneGuid.GeneralPane_guid;
+            IVsOutputWindowPane pane;
+            int hr = outputWindow.CreatePane(guidGeneral, "General", 1, 0);
+            hr = outputWindow.GetPane(guidGeneral, out pane);
+            pane.Activate();
+            pane.OutputString(string.Format("QuantifiedDev: {0}\r\n", message));
+        }
+
+
+        private void CreateStream()
         {
             var client = new HttpClient();
-            var result = client.PostAsync("http://quantifieddev.herokuapp.com/stream", new StringContent("{}")).Result;
+            HttpResponseMessage result;
+            try
+            {
+                var request = client.PostAsync("http://quantifieddev.herokuapp.com/stream", new StringContent("{}"));
+                result = request.Result;
+                
+            }
+            catch (Exception)
+            {
+                isOn = false;
+                return;
+            }
+
+            if (result.StatusCode != HttpStatusCode.OK)
+            {
+                isOn = false;
+                return;
+            }
+
             var streamDetails = result.Content.ReadAsStringAsync().Result;
             var jsonStream = JObject.Parse(streamDetails);
             Settings.Default.StreamId = jsonStream.GetValue("streamid").ToString();
-            Settings.Default.WriteToken= jsonStream.GetValue("writeToken").ToString();
-            Settings.Default.ReadToken= jsonStream.GetValue("readToken").ToString();
+            Settings.Default.WriteToken = jsonStream.GetValue("writeToken").ToString();
+            Settings.Default.ReadToken = jsonStream.GetValue("readToken").ToString();
             Settings.Default.Save();
             Debug.WriteLine(streamDetails);
         }

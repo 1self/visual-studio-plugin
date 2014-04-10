@@ -22,6 +22,8 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         public MyControl()
         {
             InitializeComponent();
+            latitude.Text = Settings.Default.Latitude.ToString();
+            longitude.Text = Settings.Default.Longitude.ToString();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
@@ -30,6 +32,13 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
                             "QuantifiedDevTool");
 
+        }
+
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.Latitude = double.Parse(latitude.Text);
+            Settings.Default.Longitude = double.Parse(longitude.Text);
+            Settings.Default.Save();
         }
     }
 }
