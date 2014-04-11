@@ -36,7 +36,7 @@
                     <TextBox x:Name="readToken" TextWrapping="Wrap" Width="210" Margin="0,0,0,10"/>
                 </StackPanel>
             </StackPanel>
-            <TextBlock TextWrapping="Wrap" Height="61"><Run Language="en-gb" Text="Please go to quantifieddev.org/app to see your data. "/></TextBlock>
+            <TextBlock x:Name="info" TextWrapping="Wrap" Height="61"><Run Language="en-gb" Text="Please go to quantifieddev.org/app to see your data. "/></TextBlock>
         </StackPanel> 
     </Grid>
 </UserControl>

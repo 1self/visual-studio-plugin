@@ -162,6 +162,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             }
 
             GetLatLong();
+            GetInformationMessage();
             
 
             var dte = (DTE)GetService(typeof(DTE));
@@ -190,6 +191,31 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             };
 
 
+        }
+
+        private void GetInformationMessage()
+        {
+            var client = new HttpClient();
+            client.GetAsync("http://quantifieddev.herokuapp.com/quantifieddev/extensions/message").ContinueWith(
+                getTask =>
+                    {
+                        try
+                        {
+                            HttpResponseMessage response = getTask.Result;
+                            if (response.StatusCode == HttpStatusCode.OK)
+                            {
+                                var rawContent = response.Content.ReadAsStringAsync().Result;
+                                var content = JObject.Parse(rawContent);
+                                Settings.Default.InfoText = content["text"].ToString();
+                                Settings.Default.Save();
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            WriteToOutput("Couldn't get the information message.");
+                        }
+                    });
         }
 
         private void GetLatLong()

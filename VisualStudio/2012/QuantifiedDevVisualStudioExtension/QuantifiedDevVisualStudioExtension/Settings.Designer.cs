@@ -82,5 +82,17 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension {
                 this["Longitude"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please go to quantifieddev.org for more information")]
+        public string InfoText {
+            get {
+                return ((string)(this["InfoText"]));
+            }
+            set {
+                this["InfoText"] = value;
+            }
+        }
     }
 }

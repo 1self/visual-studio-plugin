@@ -15,6 +15,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             longitude.Text = Settings.Default.Longitude.ToString(CultureInfo.InvariantCulture);
             streamId.Text = Settings.Default.StreamId;
             readToken.Text = Settings.Default.ReadToken;
+            info.Text = Settings.Default.InfoText;
 
         }
 
