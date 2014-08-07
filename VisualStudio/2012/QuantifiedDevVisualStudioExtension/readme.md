@@ -1,1 +1,1 @@
-Visual Studio 2012 plugin
+Visual Studio 2012 Extension
