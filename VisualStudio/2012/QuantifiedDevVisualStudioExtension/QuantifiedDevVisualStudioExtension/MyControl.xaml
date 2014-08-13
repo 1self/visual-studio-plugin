@@ -16,7 +16,7 @@
             <TextBlock TextWrapping="Wrap"><Run Language="en-gb" Text="Quantified Dev"/></TextBlock>
         </StackPanel>
         <StackPanel Margin="15,25,-10,27.333" Grid.Row="1">
-            <StackPanel Height="185" Margin="0,0,-0.333,0">
+            <StackPanel Height="235">
                 <TextBlock TextWrapping="Wrap"><Run Language="en-gb" Text="Tell us your lat long so that we know where you are:"/></TextBlock>
                 <StackPanel Orientation="Horizontal" Height="29">
                     <Label Content="Lat" Width="40"/>
@@ -35,8 +35,11 @@
                     <Label Content="Read Token"/>
                     <TextBox x:Name="readToken" TextWrapping="Wrap" Width="210" Margin="0,0,0,10"/>
                 </StackPanel>
+                <Button Content="Register this plugin" Click="Register"/>
+                <Button Content="View Dashboard" Click="Register"/>
             </StackPanel>
-            <TextBlock x:Name="info" TextWrapping="Wrap" Height="61"><Run Language="en-gb" Text="Please go to quantifieddev.org/app to see your data. "/></TextBlock>
+            
+
         </StackPanel> 
     </Grid>
 </UserControl>

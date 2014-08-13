@@ -174,6 +174,8 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
             dte.Events.BuildEvents.OnBuildDone += (scope, action) =>
             {
+                Debug.WriteLine(CultureInfo.CurrentCulture.ToString(), "OnBuildDone  ");
+         
                 var properties = new JObject();
                 properties["Result"] = buildSucceeded ? "Success" : "Failure";
                 SendBuildEvent(context, scope, action, new object[] { "Build", "Finish" }, properties);
@@ -196,7 +198,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         private void GetInformationMessage()
         {
             var client = new HttpClient();
-            client.GetAsync("http://quantifieddev.herokuapp.com/quantifieddev/extensions/message").ContinueWith(
+            client.GetAsync("http://app.quantifieddev.org/quantifieddev/extensions/message").ContinueWith(
                 getTask =>
                     {
                         try
@@ -298,7 +300,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             properties["Environment"] = "VisualStudio2012";
             buildEvent["properties"] = properties;
 
-            var url = string.Format("http://quantifieddev.herokuapp.com/stream/{0}/event", streamId);
+            var url = string.Format("https://app.quantifieddev.org/stream/{0}/event", streamId);
             var content = new StringContent(buildEvent.ToString(Newtonsoft.Json.Formatting.None));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -340,7 +342,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             HttpResponseMessage result;
             try
             {
-                var request = client.PostAsync("http://quantifieddev.herokuapp.com/stream", new StringContent("{}"));
+                var request = client.PostAsync("https://app.quantifieddev.org/stream", new StringContent("{}"));
                 result = request.Result;
                 
             }

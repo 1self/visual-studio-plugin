@@ -15,7 +15,6 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             longitude.Text = Settings.Default.Longitude.ToString(CultureInfo.InvariantCulture);
             streamId.Text = Settings.Default.StreamId;
             readToken.Text = Settings.Default.ReadToken;
-            info.Text = Settings.Default.InfoText;
 
         }
 
@@ -24,6 +23,13 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             Settings.Default.Latitude = double.Parse(latitude.Text);
             Settings.Default.Longitude = double.Parse(longitude.Text);
             Settings.Default.Save();
+        }
+
+        private void Register(object sender, RoutedEventArgs e)
+        {
+            string uri = string.Format("https://app.quantifieddev.org/dashboard?streamId={0}&readToken={1}", Settings.Default.StreamId, Settings.Default.ReadToken);
+            System.Diagnostics.Process.Start("iexplore.exe", uri);
+            
         }
     }
 }
