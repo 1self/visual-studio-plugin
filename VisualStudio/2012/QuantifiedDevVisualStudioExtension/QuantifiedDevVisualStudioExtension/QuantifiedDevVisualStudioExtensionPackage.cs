@@ -198,7 +198,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         private void GetInformationMessage()
         {
             var client = new HttpClient();
-            client.GetAsync("http://app.quantifieddev.org/quantifieddev/extensions/message").ContinueWith(
+            client.GetAsync("http://api.1self.co/quantifieddev/extensions/message").ContinueWith(
                 getTask =>
                     {
                         try
@@ -300,7 +300,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             properties["Environment"] = "VisualStudio2012";
             buildEvent["properties"] = properties;
 
-            var url = string.Format("https://app.quantifieddev.org/stream/{0}/event", streamId);
+            var url = string.Format("https:/api.1self.co/v1/stream/{0}/event", streamId);
             var content = new StringContent(buildEvent.ToString(Newtonsoft.Json.Formatting.None));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -339,11 +339,19 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         private void CreateStream()
         {
             var client = new HttpClient();
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "app-id-1ed9e3e621a063ec8679a885b4e1ec4b:app-secret-3e654db1eeb607bfdf26a0372cf043d27cca985c6a3598519820b52f5eb211b7");
             HttpResponseMessage result;
             try
             {
-                var request = client.PostAsync("https://app.quantifieddev.org/stream", new StringContent("{}"));
-                result = request.Result;
+                var request = new HttpRequestMessage()
+                {
+                    RequestUri = new Uri("https://api.1self.co/v1/streams"),
+                    Method = HttpMethod.Post,
+                    Content = new StringContent("{}")
+                };
+
+                var response = client.SendAsync(request);
+                result = response.Result;
                 
             }
             catch (Exception)

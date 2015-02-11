@@ -27,7 +27,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
         private void Register(object sender, RoutedEventArgs e)
         {
-            string uri = string.Format("https://app.quantifieddev.org/dashboard?streamId={0}&readToken={1}", Settings.Default.StreamId, Settings.Default.ReadToken);
+            string uri = string.Format("https://api.1self.co/v1/streams/{0}/events/computer,software/build,finish/count/daily/barchart?readToken={1}", Settings.Default.StreamId, Settings.Default.ReadToken);
             System.Diagnostics.Process.Start("iexplore.exe", uri);
             
         }
