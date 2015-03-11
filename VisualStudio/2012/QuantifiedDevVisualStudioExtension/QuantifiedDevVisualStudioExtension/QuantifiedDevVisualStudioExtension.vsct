@@ -122,7 +122,7 @@
         <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Quantified Dev</ButtonText>
+          <ButtonText>1self</ButtonText>
         </Strings>
       </Button>
 
@@ -131,7 +131,7 @@
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
-          <ButtonText>Quantified Dev</ButtonText>
+          <ButtonText>1self</ButtonText>
         </Strings>
       </Button>
 

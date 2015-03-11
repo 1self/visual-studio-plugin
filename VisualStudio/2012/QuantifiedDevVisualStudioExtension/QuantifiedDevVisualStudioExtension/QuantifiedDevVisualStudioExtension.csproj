@@ -49,9 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunRegRiched>true</RunRegRiched>
-    <DeployExtension>True</DeployExtension>
+    <DeployExtension>False</DeployExtension>
     <CopyVsixExtensionFiles>False</CopyVsixExtensionFiles>
-    <CreateVsixContainer>True</CreateVsixContainer>
+    <CreateVsixContainer>False</CreateVsixContainer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -221,7 +221,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

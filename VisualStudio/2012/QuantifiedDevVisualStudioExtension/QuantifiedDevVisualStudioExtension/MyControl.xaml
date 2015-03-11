@@ -13,7 +13,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Height="25" Margin="10,0,0,0" VerticalAlignment="Top" Width="300" Grid.Row="1">
-            <TextBlock TextWrapping="Wrap"><Run Language="en-gb" Text="Quantified Dev"/></TextBlock>
+            <TextBlock TextWrapping="Wrap"><Run Language="en-gb" Text="1self"/></TextBlock>
         </StackPanel>
         <StackPanel Margin="15,25,-10,27.333" Grid.Row="1">
             <StackPanel Height="235">

@@ -85,7 +85,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Please go to quantifieddev.org for more information")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Please go to www.1self.co for more information")]
         public string InfoText {
             get {
                 return ((string)(this["InfoText"]));

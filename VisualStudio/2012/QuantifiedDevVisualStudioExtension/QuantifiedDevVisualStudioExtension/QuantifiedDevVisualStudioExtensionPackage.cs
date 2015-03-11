@@ -69,6 +69,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         private ConcurrentQueue<Tuple<DateTime, string>> activityQueue = new ConcurrentQueue<Tuple<DateTime,string>>();
         private List<Tuple<DateTime,string>> currentWindow = new List<Tuple<DateTime, string>>();
         private System.Threading.Timer timer;
+        private DateTime buildStartTime;
 
         /// <summary>
         /// Default constructor of the package.
@@ -156,7 +157,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                        0,
                        ref clsid,
                        "QuantifiedDevVisualStudioExtension",
-                       string.Format(CultureInfo.CurrentCulture, "Quantified dev is enabled, your lat/long is {0},{1}. If this is wrong please go to view>other windows>quantified dev and enter the correct location", lat, @long),
+                       string.Format(CultureInfo.CurrentCulture, "1self is enabled, your lat/long is {0},{1}. If this is wrong please go to view>other windows>1self and enter the correct location", lat, @long),
                        string.Empty,
                        0,
                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
@@ -198,7 +199,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
             JObject properties = new JObject();
             properties["Language"] = "C#";
-            properties["Environment"] = "VisualStudio2012";
+            properties["Environment"] = "VisualStudio";
             properties["duration"] = (endTime - startTime).TotalSeconds;
             activityEvent["properties"] = properties;
 
@@ -207,20 +208,18 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             Debug.WriteLine(activityEvent.ToString());
 
-            //client.PostAsync(url, content).ContinueWith(postTask =>
-            //{
-            //    try
-            //    {
-            //        Debug.WriteLine(postTask.Result.StatusCode.ToString(), context, buildActionName);
-            //        Debug.WriteLine(scope.ToString(), context, buildActionName);
-            //        Debug.WriteLine(action.ToString(), context, buildActionName);
-            //    }
-            //    catch (Exception)
-            //    {
-            //        WriteToOutput("1self: Couldn't send build event");
-            //    }
+            client.PostAsync(url, content).ContinueWith(postTask =>
+            {
+                try
+                {
+                    Debug.WriteLine(postTask.Result.StatusCode.ToString(), context);
+                }
+                catch (Exception)
+                {
+                    WriteToOutput("1self: Couldn't send build event");
+                }
 
-            //});
+            });
         }
 
         private void InitializeSendingBuildEvents()
@@ -236,6 +235,8 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
             GetLatLong();
             GetInformationMessage();
+
+            var timerDuration1minutes = 60 * 1000;
 
             System.Threading.AutoResetEvent autoEvent = new System.Threading.AutoResetEvent(false);
             timer = new System.Threading.Timer((state) =>
@@ -261,10 +262,10 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                     SendActivityEvent();
                 }
 
-                timer.Change(10000, System.Threading.Timeout.Infinite);
+                timer.Change(timerDuration1minutes, System.Threading.Timeout.Infinite);
             },
             autoEvent,
-            10000,
+            timerDuration1minutes,
             System.Threading.Timeout.Infinite);
             
 
@@ -283,6 +284,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             buildEvents.OnBuildBegin += (scope, action) =>
             {
                 buildSucceeded = true;
+                buildStartTime = DateTime.Now;
                 SendBuildEvent(context, scope, action, new object[] { "Build", "Start" }, new JObject());
             };
 
@@ -292,6 +294,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
          
                 var properties = new JObject();
                 properties["Result"] = buildSucceeded ? "Success" : "Failure";
+                properties["duration"] = (DateTime.Now - buildStartTime).TotalSeconds;
                 SendBuildEvent(context, scope, action, new object[] { "Build", "Finish" }, properties);
             };
 
@@ -537,7 +540,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             buildEvent["objectTags"] = new JArray(new object[] { "Computer", "Software" });
 
             properties["Language"] = "C#";
-            properties["Environment"] = "VisualStudio2012";
+            properties["Environment"] = "VisualStudio";
             buildEvent["properties"] = properties;
 
             var url = string.Format("https://api.1self.co/v1/streams/{0}/events", streamId);
