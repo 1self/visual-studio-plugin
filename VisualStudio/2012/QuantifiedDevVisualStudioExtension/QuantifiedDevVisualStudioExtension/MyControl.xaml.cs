@@ -10,7 +10,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
     {
         public MyControl()
         {
-            InitializeComponent();
+            InitializeComponent(); 
             latitude.Text = Settings.Default.Latitude.ToString(CultureInfo.InvariantCulture);
             longitude.Text = Settings.Default.Longitude.ToString(CultureInfo.InvariantCulture);
             streamId.Text = Settings.Default.StreamId;
@@ -20,6 +20,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
         private void Save(object sender, RoutedEventArgs e)
         {
+
             Settings.Default.Latitude = double.Parse(latitude.Text);
             Settings.Default.Longitude = double.Parse(longitude.Text);
             Settings.Default.Save();

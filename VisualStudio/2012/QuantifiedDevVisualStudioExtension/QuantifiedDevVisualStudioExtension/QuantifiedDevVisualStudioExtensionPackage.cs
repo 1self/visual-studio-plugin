@@ -11,6 +11,9 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 {
@@ -52,7 +55,20 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         private double latitude;
         private double longitude;
         private bool isOn;
-        private string context = "QuantifiedDev";
+        private string context = "1self";
+        private BuildEvents buildEvents;
+        private TextEditorEvents textEditorEvents;
+        private DebuggerEvents debuggerEvents;
+        private DocumentEvents documentEvents;
+        private FindEvents findEvents;
+        private ProjectItemsEvents miscFilesEvents;
+        private SelectionEvents selectionEvents;
+        private SolutionEvents solutionEvents;
+        private ProjectItemsEvents solutionItemsEvents;
+        private WindowEvents windowEvents;
+        private ConcurrentQueue<Tuple<DateTime, string>> activityQueue = new ConcurrentQueue<Tuple<DateTime,string>>();
+        private List<Tuple<DateTime,string>> currentWindow = new List<Tuple<DateTime, string>>();
+        private System.Threading.Timer timer;
 
         /// <summary>
         /// Default constructor of the package.
@@ -150,11 +166,68 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                        out result));
         }
 
+        private void SendActivityEvent()
+        {
+            if (isOn == false)
+                return;
+
+            if(currentWindow.Count == 0)
+            {
+                return;
+            }
+            var startTime = currentWindow[0].Item1;
+            var endTime = currentWindow[currentWindow.Count - 1].Item1;
+
+            currentWindow.Clear();
+
+            var streamId = Settings.Default.StreamId;
+            var token = Settings.Default.WriteToken;
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", token);
+            var activityEvent = new JObject();
+            activityEvent["dateTime"] = DateTime.Now.ToString("o");
+
+            var location = new JObject();
+            location["lat"] = latitude;
+            location["long"] = longitude;
+            activityEvent["location"] = location;
+
+            activityEvent["actionTags"] = new JArray(new object[] {"Develop"});
+            activityEvent["objectTags"] = new JArray(new object[] { "Computer", "Software" });
+
+            JObject properties = new JObject();
+            properties["Language"] = "C#";
+            properties["Environment"] = "VisualStudio2012";
+            properties["duration"] = (endTime - startTime).TotalSeconds;
+            activityEvent["properties"] = properties;
+
+            var url = string.Format("https://api.1self.co/v1/streams/{0}/events", streamId);
+            var content = new StringContent(activityEvent.ToString(Newtonsoft.Json.Formatting.None));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            Debug.WriteLine(activityEvent.ToString());
+
+            //client.PostAsync(url, content).ContinueWith(postTask =>
+            //{
+            //    try
+            //    {
+            //        Debug.WriteLine(postTask.Result.StatusCode.ToString(), context, buildActionName);
+            //        Debug.WriteLine(scope.ToString(), context, buildActionName);
+            //        Debug.WriteLine(action.ToString(), context, buildActionName);
+            //    }
+            //    catch (Exception)
+            //    {
+            //        WriteToOutput("1self: Couldn't send build event");
+            //    }
+
+            //});
+        }
+
         private void InitializeSendingBuildEvents()
         {
             Debug.WriteLine(CultureInfo.CurrentCulture.ToString(), "Entering Initialize() of: {0}", this);
          
-            const string context = "SYKES";
+            const string context = "1SELF";
 
             if (Settings.Default.StreamId == "")
             {
@@ -163,25 +236,66 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
             GetLatLong();
             GetInformationMessage();
+
+            System.Threading.AutoResetEvent autoEvent = new System.Threading.AutoResetEvent(false);
+            timer = new System.Threading.Timer((state) =>
+            {   
+                Tuple<DateTime, string> outEvent;
+                var newEvents = false;
+                while(activityQueue.TryDequeue(out outEvent)){
+                    currentWindow.Add(outEvent);
+                    newEvents = true;
+                }
+
+                if (newEvents)
+                {
+                    var startTime = currentWindow[0].Item1;
+                    var endTime = currentWindow[currentWindow.Count - 1].Item1;
+                    if (endTime - startTime > TimeSpan.FromMinutes(20))
+                    {
+                        SendActivityEvent();
+                    }
+                }
+                else
+                {
+                    SendActivityEvent();
+                }
+
+                timer.Change(10000, System.Threading.Timeout.Infinite);
+            },
+            autoEvent,
+            10000,
+            System.Threading.Timeout.Infinite);
             
 
             var dte = (DTE)GetService(typeof(DTE));
-            dte.Events.BuildEvents.OnBuildBegin += (scope, action) =>
+            buildEvents = dte.Events.BuildEvents;
+            debuggerEvents = dte.Events.DebuggerEvents;
+            documentEvents = dte.Events.DocumentEvents;
+            findEvents = dte.Events.FindEvents;
+            miscFilesEvents = dte.Events.MiscFilesEvents;
+            selectionEvents = dte.Events.SelectionEvents;
+            solutionEvents = dte.Events.SolutionEvents;
+            solutionItemsEvents = dte.Events.SolutionItemsEvents;
+            windowEvents = dte.Events.WindowEvents;
+            textEditorEvents = dte.Events.TextEditorEvents;
+
+            buildEvents.OnBuildBegin += (scope, action) =>
             {
                 buildSucceeded = true;
                 SendBuildEvent(context, scope, action, new object[] { "Build", "Start" }, new JObject());
             };
 
-            dte.Events.BuildEvents.OnBuildDone += (scope, action) =>
+            buildEvents.OnBuildDone += (scope, action) =>
             {
-                Debug.WriteLine(CultureInfo.CurrentCulture.ToString(), "OnBuildDone  ");
+                Console.WriteLine(CultureInfo.CurrentCulture.ToString(), "OnBuildDone  ");
          
                 var properties = new JObject();
                 properties["Result"] = buildSucceeded ? "Success" : "Failure";
                 SendBuildEvent(context, scope, action, new object[] { "Build", "Finish" }, properties);
             };
 
-            dte.Events.BuildEvents.OnBuildProjConfigDone += (project, config, platform, solutionConfig, success) =>
+            buildEvents.OnBuildProjConfigDone += (project, config, platform, solutionConfig, success) =>
             {
                 Debug.WriteLine("Project Build Begin", context);
                 Debug.WriteLine(project, context);
@@ -192,7 +306,133 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                 buildSucceeded &= success;  
             };
 
+            documentEvents.DocumentClosing += (Document doc) =>
+            {
+                trackActivity("doc closing");
+            };
 
+            documentEvents.DocumentOpened += (Document doc) =>
+            {
+                trackActivity("doc opened");
+            };
+
+            documentEvents.DocumentOpening += (string DocumentPath, bool ReadOnly) =>
+            {
+                trackActivity("doc opening");
+            };
+
+            documentEvents.DocumentSaved += (Document doc) =>
+            {
+                trackActivity("doc saved");
+            };
+
+            debuggerEvents.OnContextChanged += (EnvDTE.Process NewProcess, Program NewProgram, Thread NewThread, EnvDTE.StackFrame NewStackFrame) =>
+            {
+                trackActivity("debugger context changed");
+            };
+
+            debuggerEvents.OnEnterBreakMode += (dbgEventReason Reason, ref dbgExecutionAction ExecutionAction) =>
+            {
+                trackActivity("enter break mode");
+            };
+
+            debuggerEvents.OnEnterRunMode += (dbgEventReason Reason) =>
+            {
+                trackActivity("enter run mode");
+            };
+
+            debuggerEvents.OnExceptionNotHandled += (string ExceptionType, string Name, int Code, string Description, ref dbgExceptionAction ExceptionAction) =>
+            {
+                trackActivity("exception not handled");
+            };
+
+            debuggerEvents.OnExceptionThrown += (string ExceptionType, string Name, int Code, string Description, ref dbgExceptionAction ExceptionAction) =>
+            {
+                trackActivity("exception thrown");
+            };
+
+            findEvents.FindDone += (vsFindResult Result, bool Cancelled) =>
+            {
+ 	            trackActivity("find done");
+            };
+
+            miscFilesEvents.ItemAdded += (ProjectItem ProjectItem) =>
+            {
+ 	            trackActivity("item added");
+            }; 
+            
+            
+            miscFilesEvents.ItemRemoved += (ProjectItem ProjectItem) =>
+            {
+ 	            trackActivity("item removed");
+            };
+            
+            miscFilesEvents.ItemRenamed += (ProjectItem projectItem, string oldName) =>
+            {
+ 	            trackActivity("item renamed");
+            };
+            
+            selectionEvents.OnChange += () =>
+            {
+                trackActivity("selection change");
+            };
+            
+            solutionEvents.Opened += () =>
+            {
+ 	            trackActivity("solution opened");
+            };
+            
+            solutionEvents.ProjectAdded += (Project Project) =>
+            {
+ 	            trackActivity("project added");
+            };
+
+            solutionEvents.ProjectRemoved += (Project Project) =>
+            {
+ 	            trackActivity("project removed");
+            };
+            
+            solutionEvents.ProjectRenamed += (Project project, string oldname) =>
+            {
+ 	            trackActivity("project renamed");
+            };
+
+            solutionEvents.Renamed += (string oldname) =>
+            {
+ 	            trackActivity("solution renamed");
+            };
+            
+            solutionItemsEvents.ItemAdded += (ProjectItem ProjectItem) =>
+            {
+ 	            trackActivity("solution item added");
+            };
+            
+            solutionItemsEvents.ItemRemoved += (ProjectItem ProjectItem) =>
+            {
+ 	            trackActivity("solution item removed");
+            };
+
+            windowEvents.WindowActivated += (Window GotFocus, Window LostFocus) =>
+            {
+                trackActivity("window activated");
+            };
+
+            textEditorEvents.LineChanged += (TextPoint StartPoint, TextPoint EndPoint, int Hint) =>
+            {
+                trackActivity("Line Changed");
+            };
+            
+            //dte.Events.SolutionItemsEvents.ItemRenamed += (ProjectItem ProjectItem) =>
+            //{
+            //    trackActivity("solution item renamed");
+            //};   
+        }
+
+        void trackActivity(string source)
+        {
+            var thisEvent = new Tuple<DateTime, string>(DateTime.Now, source);
+            activityQueue.Enqueue(thisEvent);
+            Debug.WriteLine("Activity: " + thisEvent.Item1 + ": " + thisEvent.Item2);
         }
 
         private void GetInformationMessage()
@@ -300,7 +540,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             properties["Environment"] = "VisualStudio2012";
             buildEvent["properties"] = properties;
 
-            var url = string.Format("https:/api.1self.co/v1/stream/{0}/event", streamId);
+            var url = string.Format("https://api.1self.co/v1/streams/{0}/events", streamId);
             var content = new StringContent(buildEvent.ToString(Newtonsoft.Json.Formatting.None));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -314,7 +554,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                 }
                 catch (Exception)
                 {
-                    WriteToOutput("QuantifiedDev: Couldn't send build event");                           
+                    WriteToOutput("1self: Couldn't send build event");                           
                 }
                    
             });
@@ -332,7 +572,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             int hr = outputWindow.CreatePane(guidGeneral, "General", 1, 0);
             hr = outputWindow.GetPane(guidGeneral, out pane);
             pane.Activate();
-            pane.OutputString(string.Format("QuantifiedDev: {0}\r\n", message));
+            pane.OutputString(string.Format("1self: {0}\r\n", message));
         }
 
 
