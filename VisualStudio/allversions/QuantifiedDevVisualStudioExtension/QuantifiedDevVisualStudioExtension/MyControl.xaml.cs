@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     /// <summary>
     /// Interaction logic for MyControl.xaml

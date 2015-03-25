@@ -29,7 +29,7 @@
 
   <!--The Commands section is where we the commands, menus and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidQuantifiedDevVisualStudioExtensionPkg">
+  <Commands package="guid1selfVisualStudioExtensionPkg">
     <!-- Inside this section we have different sub-sections: one for the menus, another  
     for the menu groups, one for the buttons (the actual commands), one for the combos 
     and the last one for the bitmaps used. Each element is identified by a command id that  
@@ -44,17 +44,17 @@
       <!--  To define an element in this group you need an ID, a parent group, a display priority,
             a menu type, a name and a default text. -->
       <!-- Editor Toolbar -->
-      <Menu guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDM_TLB_RTF" priority="0x0000" type="Toolbar">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="0"/>
+      <Menu guid="guid1selfVisualStudioExtensionCmdSet" id="IDM_TLB_RTF" priority="0x0000" type="Toolbar">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="0"/>
         <Strings>
-          <ButtonText>QuantifiedDevVisualStudioExtension Toolbar</ButtonText>
+          <ButtonText>1selfVisualStudioExtension Toolbar</ButtonText>
         </Strings>
       </Menu>
       <!-- Editor Context Menu -->
-      <Menu guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDMX_RTF" priority="0x0000" type="Context">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="0"/>
+      <Menu guid="guid1selfVisualStudioExtensionCmdSet" id="IDMX_RTF" priority="0x0000" type="Context">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="0"/>
         <Strings>
-          <ButtonText>QuantifiedDevVisualStudioExtension Context Menu</ButtonText>
+          <ButtonText>1selfVisualStudioExtension Context Menu</ButtonText>
         </Strings>
       </Menu>
     </Menus>
@@ -65,43 +65,43 @@
          must be a menu. -->
     <Groups>
 
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
       
 
 
       <!--Editor menu group -->
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_EDITOR_CMDS" priority="0xFE00">
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_EDITOR_CMDS" priority="0xFE00">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_EDIT"/>
       </Group>
 
       <!-- Toolbar groups -->
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1" priority="0x0100">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1" priority="0x0100">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
       </Group>
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT2" priority="0x0200">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT2" priority="0x0200">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
       </Group>
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT" priority="0x0300">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT" priority="0x0300">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
       </Group>
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_BULLET" priority="0x0400">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_BULLET" priority="0x0400">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
       </Group>
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT_COMBOS" priority="0x0040">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT_COMBOS" priority="0x0040">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDM_TLB_RTF"/>
       </Group>
       
       <!--Context menu groups -->
       <Group guid="guidSHLMainMenu" id="IDG_VS_EDIT_CUTCOPY" priority="0x0100">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDMX_RTF"/>
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDMX_RTF"/>
       </Group>
-      <Group guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_CTX_PROPS" priority="0x0200">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDMX_RTF"/>
+      <Group guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_CTX_PROPS" priority="0x0200">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDMX_RTF"/>
       </Group>
       <Group guid="guidSharedMenuGroup" id="IDG_VS_FORMAT_FONTFACE" priority="0x0300">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDMX_RTF"/>
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDMX_RTF"/>
       </Group>
 
     </Groups>
@@ -118,8 +118,8 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
 
-      <Button guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="cmdidQuantifiedDev" priority="0x0100" type="Button">
-        <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="MyMenuGroup" />
+      <Button guid="guid1selfVisualStudioExtensionCmdSet" id="cmdid1self" priority="0x0100" type="Button">
+        <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <ButtonText>1self</ButtonText>
@@ -127,7 +127,7 @@
       </Button>
 
 
-      <Button guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="cmdidQuantifiedDevTool" priority="0x0100" type="Button">
+      <Button guid="guid1selfVisualStudioExtensionCmdSet" id="cmdid1selfTool" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
@@ -136,7 +136,7 @@
       </Button>
 
 
-      <Button guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="commandIDStrike" priority="0x0400" type="Button">
+      <Button guid="guid1selfVisualStudioExtensionCmdSet" id="commandIDStrike" priority="0x0400" type="Button">
         <Parent guid="guidSharedMenuGroup" id="IDG_VS_FORMAT_FONTFACE"/>
         <Icon guid="guidImages" id="bmpPicStrikethrough"/>
         <CommandFlag>DefaultInvisible</CommandFlag>
@@ -210,39 +210,39 @@
   <CommandPlacements>
     <!--Editor Toolbar -->
     <CommandPlacement guid="guidVSStd97" id="cmdidFontName" priority="0x0100">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT_COMBOS"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT_COMBOS"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidFontSize" priority="0x0200">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT_COMBOS"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT_COMBOS"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidBold" priority="0x0100">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidItalic" priority="0x0200">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidUnderline" priority="0x0300">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
     </CommandPlacement>
-    <CommandPlacement guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="commandIDStrike" priority="0x0400">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
+    <CommandPlacement guid="guid1selfVisualStudioExtensionCmdSet" id="commandIDStrike" priority="0x0400">
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_FONT1"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidJustifyLeft" priority="0x0100">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidJustifyCenter" priority="0x0200">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd97" id="cmdidJustifyRight" priority="0x0300">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_INDENT"/>
     </CommandPlacement>
     <CommandPlacement guid="guidVSStd2K" id="ECMD_BULLETEDLIST" priority="0x0100">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_BULLET"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_TLB_BULLET"/>
     </CommandPlacement>
     
     <!-- Editor context menu -->
     <CommandPlacement guid="guidVSStd2K" id="ECMD_BULLETEDLIST" priority="0x0100">
-      <Parent guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDG_RTF_CTX_PROPS"/>
+      <Parent guid="guid1selfVisualStudioExtensionCmdSet" id="IDG_RTF_CTX_PROPS"/>
     </CommandPlacement>
   </CommandPlacements>
 
@@ -253,7 +253,7 @@
       debugging, editing a file or when the user is using a specific designer. -->
   <VisibilityConstraints>
 
-    <VisibilityItem guid="guidQuantifiedDevVisualStudioExtensionCmdSet" id="IDM_TLB_RTF" context="guidQuantifiedDevVisualStudioExtensionEditorFactory" />
+    <VisibilityItem guid="guid1selfVisualStudioExtensionCmdSet" id="IDM_TLB_RTF" context="guid1selfVisualStudioExtensionEditorFactory" />
   </VisibilityConstraints>
 
   <KeyBindings>
@@ -266,21 +266,21 @@
        and one problem is that the shell will not inform the user that a conflict was found. The only  
        way to detect the problem is to start Visual Studio under debugger, try to execute any command  
        and look if there is a message in the output window about a duplicated accelerator found.--> 
-    <KeyBinding guid="guidVSStd97" id="cmdidBold" editor="guidQuantifiedDevVisualStudioExtensionEditorFactory" key1="B" mod1="Control"/>
-    <KeyBinding guid="guidVSStd97" id="cmdidItalic" editor="guidQuantifiedDevVisualStudioExtensionEditorFactory" key1="I" mod1="Control"/>
-    <KeyBinding guid="guidVSStd97" id="cmdidUnderline" editor="guidQuantifiedDevVisualStudioExtensionEditorFactory" key1="U" mod1="Control"/>
-    <KeyBinding guid="guidVSStd97" id="cmdidJustifyLeft" editor="guidQuantifiedDevVisualStudioExtensionEditorFactory" key1="L" mod1="Control"/>
-    <KeyBinding guid="guidVSStd97" id="cmdidJustifyCenter" editor="guidQuantifiedDevVisualStudioExtensionEditorFactory" key1="E" mod1="Control"/>
-    <KeyBinding guid="guidVSStd97" id="cmdidJustifyRight" editor="guidQuantifiedDevVisualStudioExtensionEditorFactory" key1="R" mod1="Control"/>
-    <KeyBinding guid="guidVSStd2K" id="ECMD_INSERT" editor="guidQuantifiedDevVisualStudioExtensionEditorFactory" key1="VK_INSERT"/>
+    <KeyBinding guid="guidVSStd97" id="cmdidBold" editor="guid1selfVisualStudioExtensionEditorFactory" key1="B" mod1="Control"/>
+    <KeyBinding guid="guidVSStd97" id="cmdidItalic" editor="guid1selfVisualStudioExtensionEditorFactory" key1="I" mod1="Control"/>
+    <KeyBinding guid="guidVSStd97" id="cmdidUnderline" editor="guid1selfVisualStudioExtensionEditorFactory" key1="U" mod1="Control"/>
+    <KeyBinding guid="guidVSStd97" id="cmdidJustifyLeft" editor="guid1selfVisualStudioExtensionEditorFactory" key1="L" mod1="Control"/>
+    <KeyBinding guid="guidVSStd97" id="cmdidJustifyCenter" editor="guid1selfVisualStudioExtensionEditorFactory" key1="E" mod1="Control"/>
+    <KeyBinding guid="guidVSStd97" id="cmdidJustifyRight" editor="guid1selfVisualStudioExtensionEditorFactory" key1="R" mod1="Control"/>
+    <KeyBinding guid="guidVSStd2K" id="ECMD_INSERT" editor="guid1selfVisualStudioExtensionEditorFactory" key1="VK_INSERT"/>
   </KeyBindings>
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidQuantifiedDevVisualStudioExtensionPkg" value="{b8e9e30c-7b19-455b-a83b-33a81be4e0f5}" />
+    <GuidSymbol name="guid1selfVisualStudioExtensionPkg" value="{b8e9e30c-7b19-455b-a83b-33a81be4e0f5}" />
     
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidQuantifiedDevVisualStudioExtensionCmdSet" value="{41f7014c-a43c-4b8c-ae55-270bd9608ba9}">
+    <GuidSymbol name="guid1selfVisualStudioExtensionCmdSet" value="{41f7014c-a43c-4b8c-ae55-270bd9608ba9}">
 
       <IDSymbol name="IDM_TLB_RTF" value="0x0001" />
       <IDSymbol name="IDMX_RTF" value="0x0002" />
@@ -301,12 +301,12 @@
       <IDSymbol name="IDG_RTF_CTX_PROPS" value="0x100a" />
       <IDSymbol name="IDG_RTF_EDITOR_CMDS" value="0x100b" />
       <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="cmdidQuantifiedDev" value="0x0100" />
-      <IDSymbol name="cmdidQuantifiedDevTool" value="0x0101" />
+      <IDSymbol name="cmdid1self" value="0x0100" />
+      <IDSymbol name="cmdid1selfTool" value="0x0101" />
       <IDSymbol name="commandIDStrike" value="0x0102" />
     </GuidSymbol>
     
-    <GuidSymbol name="guidQuantifiedDevVisualStudioExtensionEditorFactory" value="{0d4dd946-ff9c-46e1-86e5-6e9052d3c9ea}" />
+    <GuidSymbol name="guid1selfVisualStudioExtensionEditorFactory" value="{0d4dd946-ff9c-46e1-86e5-6e9052d3c9ea}" />
     
     <GuidSymbol name="guidImages" value="{55b16472-56a6-4aca-bae7-3b1b10794615}" >
       <IDSymbol name="bmpPic1" value="1" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     /// <summary>
     /// This class will contain all methods that we need to import.

@@ -9,19 +9,19 @@ using Microsoft.VisualStudio.Shell;
 
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     /// <summary>
     /// Factory for creating our editor object. Extends from the IVsEditoryFactory interface
     /// </summary>
-    [Guid(GuidList.guidQuantifiedDevVisualStudioExtensionEditorFactoryString)]
+    [Guid(GuidList.guid1selfVisualStudioExtensionEditorFactoryString)]
     public sealed class EditorFactory : IVsEditorFactory, IDisposable
     {
-        private QuantifiedDevVisualStudioExtensionPackage editorPackage;
+        private C1selfVisualStudioExtensionPackage editorPackage;
         private ServiceProvider vsServiceProvider;
 
 
-        public EditorFactory(QuantifiedDevVisualStudioExtensionPackage package)
+        public EditorFactory(C1selfVisualStudioExtensionPackage package)
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering {0} constructor", this.ToString()));
 
@@ -169,7 +169,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             // Initialize to null
             ppunkDocView = IntPtr.Zero;
             ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidList.guidQuantifiedDevVisualStudioExtensionEditorFactory;
+            pguidCmdUI = GuidList.guid1selfVisualStudioExtensionEditorFactory;
             pgrfCDW = 0;
             pbstrEditorCaption = null;
 

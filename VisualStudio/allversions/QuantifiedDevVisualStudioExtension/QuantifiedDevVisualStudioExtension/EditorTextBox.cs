@@ -3,7 +3,7 @@ using System;
 using System.Windows.Forms;
 using System.Security.Permissions;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     public partial class EditorTextBox : RichTextBox
     {

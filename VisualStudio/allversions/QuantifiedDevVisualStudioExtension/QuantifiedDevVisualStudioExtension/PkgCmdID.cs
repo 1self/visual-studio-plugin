@@ -2,12 +2,12 @@
 // MUST match PkgCmdID.h
 using System;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     static class PkgCmdIDList
     {
-        public const uint cmdidQuantifiedDev =        0x100;
-        public const uint cmdidQuantifiedDevTool =    0x101;
+        public const uint cmdid1self =        0x100;
+        public const uint cmdid1selfTool =    0x101;
 
         // Menus
         public const int IDM_TLB_RTF = 0x0001;			// toolbar

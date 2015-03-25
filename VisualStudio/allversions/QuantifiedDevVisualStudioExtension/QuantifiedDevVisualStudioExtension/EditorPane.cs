@@ -21,7 +21,7 @@ using ISysServiceProvider = System.IServiceProvider;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using VSStd97CmdID = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     /// <summary>
     /// This control host the editor (an extended RichTextBox) and is responsible for
@@ -35,21 +35,21 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
     // For our file type should appear under "General" in the new files dialog, we need the following:-
     //     - A .vsdir file in the same directory as NewFileItems.vsdir (generally under Common7\IDE\NewFileItems).
     //       In our case the file name is Editor.vsdir but we only require a file with .vsdir extension.
-    //     - An empty quantifieddevvisualstudioextension file in the same directory as NewFileItems.vsdir. In
-    //       our case we chose MyExtFile.quantifieddevvisualstudioextension. Note this file name appears in Editor.vsdir
+    //     - An empty 1selfvisualstudioextension file in the same directory as NewFileItems.vsdir. In
+    //       our case we chose MyExtFile.1selfvisualstudioextension. Note this file name appears in Editor.vsdir
     //       (see vsdir file format below)
     //     - Three text strings in our language specific resource. File Resources.resx :-
     //          - "Rich Text file" - this is shown next to our icon.
     //          - "A blank rich text file" - shown in the description window
     //             in the new file dialog.
     //          - "MyExtFile" - This is the base file name. New files will initially
-    //             be named as MyExtFile1.quantifieddevvisualstudioextension, MyExtFile2.quantifieddevvisualstudioextension... etc.
+    //             be named as MyExtFile1.1selfvisualstudioextension, MyExtFile2.1selfvisualstudioextension... etc.
     ///////////////////////////////////////////////////////////////////////////////
     // Editor.vsdir contents:-
-    //    MyExtFile.quantifieddevvisualstudioextension|{3085E1D6-A938-478e-BE49-3546C09A1AB1}|#106|80|#109|0|401|0|#107
+    //    MyExtFile.1selfvisualstudioextension|{3085E1D6-A938-478e-BE49-3546C09A1AB1}|#106|80|#109|0|401|0|#107
     //
     // The fields in order are as follows:-
-    //    - MyExtFile.quantifieddevvisualstudioextension - our empty quantifieddevvisualstudioextension file
+    //    - MyExtFile.1selfvisualstudioextension - our empty 1selfvisualstudioextension file
     //    - {db16ff5e-400a-4cb7-9fde-cb3eab9d22d2} - our Editor package guid
     //    - #106 - the ID of "Rich Text file" in the resource
     //    - 80 - the display ordering priority
@@ -57,7 +57,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
     //    - 0 - resource dll string (we don't use this)
     //    - 401 - the ID of our icon
     //    - 0 - various flags (we don't use this - se vsshell.idl)
-    //    - #107 - the ID of "quantifieddevvisualstudioextension"
+    //    - #107 - the ID of "1selfvisualstudioextension"
     ///////////////////////////////////////////////////////////////////////////////
 
     //This is required for Find In files scenario to work properly. This provides a connection point 
@@ -88,7 +88,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                                 IVsToolboxUser      //Sends notification about Toolbox items to the owner of these items
     {
         private const uint MyFormat = 0;
-        private const string MyExtension = ".quantifieddevvisualstudioextension";
+        private const string MyExtension = ".1selfvisualstudioextension";
         private static string[] fontSizeArray = { "8", "9", "10", "11", "12", "14", "16", "18",
                                                   "20", "22", "24", "26", "28", "36", "48", "72"};
 
@@ -114,7 +114,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         }
 
         #region Fields
-        private QuantifiedDevVisualStudioExtensionPackage myPackage;
+        private C1selfVisualStudioExtensionPackage myPackage;
 
         private string fileName = string.Empty;
         private bool isDirty;
@@ -155,7 +155,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         /// our initialization functions.
         /// </summary>
         /// <param name="package">Our Package instance.</param>
-        public EditorPane(QuantifiedDevVisualStudioExtensionPackage package)
+        public EditorPane(C1selfVisualStudioExtensionPackage package)
             : base(null)
         {
             PrivateInit(package);
@@ -182,11 +182,11 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         #endregion
 
         /// <summary>
-        /// Initialization routine for the Editor. Loads the list of properties for the quantifieddevvisualstudioextension document 
+        /// Initialization routine for the Editor. Loads the list of properties for the 1selfvisualstudioextension document 
         /// which will show up in the properties window 
         /// </summary>
         /// <param name="package"></param>
-        private void PrivateInit(QuantifiedDevVisualStudioExtensionPackage package)
+        private void PrivateInit(C1selfVisualStudioExtensionPackage package)
         {
             myPackage = package;
             loading = false;
@@ -426,7 +426,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
                                 new EventHandler(onItalic), new EventHandler(onQueryItalic));
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.Underline,
                                 new EventHandler(onUnderline), new EventHandler(onQueryUnderline));
-                addCommand(mcs, GuidList.guidQuantifiedDevVisualStudioExtensionCmdSet, (int)PkgCmdIDList.icmdStrike,
+                addCommand(mcs, GuidList.guid1selfVisualStudioExtensionCmdSet, (int)PkgCmdIDList.icmdStrike,
                                 new EventHandler(onStrikethrough), new EventHandler(onQueryStrikethrough));
                 addCommand(mcs, VSConstants.GUID_VSStandardCommandSet97, (int)VSConstants.VSStd97CmdID.JustifyCenter,
                                 new EventHandler(onJustifyCenter), new EventHandler(onQueryJustifyCenter));
@@ -1056,7 +1056,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         private void DisplayContextMenuAt(Point point)
         {
             // Pass in the GUID:ID pair for the context menu.
-            CommandID contextMenuID = new CommandID(GuidList.guidQuantifiedDevVisualStudioExtensionCmdSet, PkgCmdIDList.IDMX_RTF);
+            CommandID contextMenuID = new CommandID(GuidList.guid1selfVisualStudioExtensionCmdSet, PkgCmdIDList.IDMX_RTF);
 
             // Get the OleMenuCommandService from the package
             IMenuCommandService menuService = GetService(typeof(IMenuCommandService)) as IMenuCommandService;
@@ -1319,7 +1319,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
 
         int Microsoft.VisualStudio.OLE.Interop.IPersist.GetClassID(out Guid pClassID)
         {
-            pClassID = GuidList.guidQuantifiedDevVisualStudioExtensionEditorFactory;
+            pClassID = GuidList.guid1selfVisualStudioExtensionEditorFactory;
             return VSConstants.S_OK;
         }
 

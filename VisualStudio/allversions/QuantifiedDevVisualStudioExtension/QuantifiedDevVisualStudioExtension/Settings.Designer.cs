@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension {
+namespace N1self.C1selfVisualStudioExtension {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

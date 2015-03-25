@@ -4,7 +4,7 @@ using System.Security.Permissions;
 using System.Runtime.InteropServices;
 using tom;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     public partial class MyEditor : UserControl
     {
@@ -19,7 +19,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             this.richTextBoxCtrl.WordWrap = false;
             this.richTextBoxCtrl.HideSelection = false;
             
-            m_Recorder = new VSMacroRecorder(GuidList.guidQuantifiedDevVisualStudioExtensionEditorFactory);
+            m_Recorder = new VSMacroRecorder(GuidList.guid1selfVisualStudioExtensionEditorFactory);
         }
 
         public EditorTextBox RichTextBoxControl

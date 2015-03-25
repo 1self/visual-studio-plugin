@@ -1,5 +1,5 @@
 ﻿
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     partial class EditorTextBox
     {

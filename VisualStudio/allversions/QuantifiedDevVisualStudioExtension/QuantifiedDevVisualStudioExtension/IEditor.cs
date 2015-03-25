@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using tom;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
 
     /// <summary>

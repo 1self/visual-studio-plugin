@@ -15,7 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+namespace N1self.C1selfVisualStudioExtension
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -37,19 +37,19 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
-    [ProvideEditorExtension(typeof(EditorFactory), ".quantifieddevvisualstudioextension", 50, 
+    [ProvideEditorExtension(typeof(EditorFactory), ".1selfvisualstudioextension", 50, 
               ProjectGuid = "{A2FE74E1-B743-11d0-AE1A-00A0C90FFFC3}", 
               TemplateDir = "Templates", 
               NameResourceID = 105,
-              DefaultName = "QuantifiedDevVisualStudioExtension")]
-    [ProvideKeyBindingTable(GuidList.guidQuantifiedDevVisualStudioExtensionEditorFactoryString, 102)]
+              DefaultName = "1selfVisualStudioExtension")]
+    [ProvideKeyBindingTable(GuidList.guid1selfVisualStudioExtensionEditorFactoryString, 102)]
     // Our Editor supports Find and Replace therefore we need to declare support for LOGVIEWID_TextView.
     // This attribute declares that your EditorPane class implements IVsCodeWindow interface
     // used to navigate to find results from a "Find in Files" type of operation.
     [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.TextView_string)]
-    [Guid(GuidList.guidQuantifiedDevVisualStudioExtensionPkgString)]
+    [Guid(GuidList.guid1selfVisualStudioExtensionPkgString)]
     [ProvideAutoLoadAttribute("{F1536EF8-92EC-443C-9ED7-FDADF150DA82}")]
-    public sealed class QuantifiedDevVisualStudioExtensionPackage : Package
+    public sealed class C1selfVisualStudioExtensionPackage : Package
     {
         private bool buildSucceeded;
         private double latitude;
@@ -78,7 +78,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
         /// not sited yet inside Visual Studio environment. The place to do all the other 
         /// initialization is the Initialize method.
         /// </summary>
-        public QuantifiedDevVisualStudioExtensionPackage()
+        public C1selfVisualStudioExtensionPackage()
         {
 // ReSharper disable RedundantStringFormatCall
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
@@ -127,11 +127,11 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             if ( null != mcs )
             {
                 // Create the command for the menu item.
-                var menuCommandId = new CommandID(GuidList.guidQuantifiedDevVisualStudioExtensionCmdSet, (int)PkgCmdIDList.cmdidQuantifiedDev);
+                var menuCommandId = new CommandID(GuidList.guid1selfVisualStudioExtensionCmdSet, (int)PkgCmdIDList.cmdid1self);
                 var menuItem = new MenuCommand(MenuItemCallback, menuCommandId );
                 mcs.AddCommand( menuItem );
                 // Create the command for the tool window
-                var toolwndCommandId = new CommandID(GuidList.guidQuantifiedDevVisualStudioExtensionCmdSet, (int)PkgCmdIDList.cmdidQuantifiedDevTool);
+                var toolwndCommandId = new CommandID(GuidList.guid1selfVisualStudioExtensionCmdSet, (int)PkgCmdIDList.cmdid1selfTool);
                 var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
                 mcs.AddCommand( menuToolWin );
             }
@@ -156,7 +156,7 @@ namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
             ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
                        0,
                        ref clsid,
-                       "QuantifiedDevVisualStudioExtension",
+                       "1selfVisualStudioExtension",
                        string.Format(CultureInfo.CurrentCulture, "1self is enabled, your lat/long is {0},{1}. If this is wrong please go to view>other windows>1self and enter the correct location", lat, @long),
                        string.Empty,
                        0,

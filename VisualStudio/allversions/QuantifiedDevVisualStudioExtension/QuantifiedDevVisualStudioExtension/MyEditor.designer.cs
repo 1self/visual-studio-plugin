@@ -1,4 +1,4 @@
-﻿namespace QuantifiedDev.QuantifiedDevVisualStudioExtension
+﻿namespace N1self.C1selfVisualStudioExtension
 {
     partial class MyEditor
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.richTextBoxCtrl = new QuantifiedDev.QuantifiedDevVisualStudioExtension.EditorTextBox();
+            this.richTextBoxCtrl = new N1self.C1selfVisualStudioExtension.EditorTextBox();
             this.SuspendLayout();
             // 
             // richTextBoxCtrl
