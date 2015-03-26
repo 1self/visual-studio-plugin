@@ -35,7 +35,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>N1self.C1selfVisualStudioExtension</RootNamespace>
-    <AssemblyName>QuantifiedDevVisualStudioExtension</AssemblyName>
+    <AssemblyName>1selfVisualStudioExtension</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -180,7 +180,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\QuantifiedDevVisualStudioExtension.vsdir">
+    <Content Include="Templates\1selfVisualStudioExtension.vsdir">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
