@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace N1self.C1selfVisualStudioExtension
 {
@@ -37,9 +38,9 @@ namespace N1self.C1selfVisualStudioExtension
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
-    [ProvideEditorExtension(typeof(EditorFactory), ".1selfvisualstudioextension", 50, 
-              ProjectGuid = "{A2FE74E1-B743-11d0-AE1A-00A0C90FFFC3}", 
-              TemplateDir = "Templates", 
+    [ProvideEditorExtension(typeof(EditorFactory), ".1selfvisualstudioextension", 50,
+              ProjectGuid = "{A2FE74E1-B743-11d0-AE1A-00A0C90FFFC3}",
+              TemplateDir = "Templates",
               NameResourceID = 105,
               DefaultName = "1selfVisualStudioExtension")]
     [ProvideKeyBindingTable(GuidList.guid1selfVisualStudioExtensionEditorFactoryString, 102)]
@@ -66,8 +67,8 @@ namespace N1self.C1selfVisualStudioExtension
         private SolutionEvents solutionEvents;
         private ProjectItemsEvents solutionItemsEvents;
         private WindowEvents windowEvents;
-        private ConcurrentQueue<Tuple<DateTime, string>> activityQueue = new ConcurrentQueue<Tuple<DateTime,string>>();
-        private List<Tuple<DateTime,string>> currentWindow = new List<Tuple<DateTime, string>>();
+        private ConcurrentQueue<Tuple<DateTime, string>> activityQueue = new ConcurrentQueue<Tuple<DateTime, string>>();
+        private List<Tuple<DateTime, string>> currentWindow = new List<Tuple<DateTime, string>>();
         private System.Threading.Timer timer;
         private DateTime buildStartTime;
 
@@ -80,9 +81,9 @@ namespace N1self.C1selfVisualStudioExtension
         /// </summary>
         public C1selfVisualStudioExtensionPackage()
         {
-// ReSharper disable RedundantStringFormatCall
+            // ReSharper disable RedundantStringFormatCall
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
-// ReSharper restore RedundantStringFormatCall
+            // ReSharper restore RedundantStringFormatCall
         }
 
         /// <summary>
@@ -116,7 +117,7 @@ namespace N1self.C1selfVisualStudioExtension
         protected override void Initialize()
         {
             isOn = true;
-            Debug.WriteLine (CultureInfo.CurrentCulture.ToString(), "Entering Initialize() of: {0}", this);
+            Debug.WriteLine(CultureInfo.CurrentCulture.ToString(), "Entering Initialize() of: {0}", this);
             base.Initialize();
 
             //Create Editor Factory. Note that the base Package class will call Dispose on it.
@@ -124,16 +125,16 @@ namespace N1self.C1selfVisualStudioExtension
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
             var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if ( null != mcs )
+            if (null != mcs)
             {
                 // Create the command for the menu item.
                 var menuCommandId = new CommandID(GuidList.guid1selfVisualStudioExtensionCmdSet, (int)PkgCmdIDList.cmdid1self);
-                var menuItem = new MenuCommand(MenuItemCallback, menuCommandId );
-                mcs.AddCommand( menuItem );
+                var menuItem = new MenuCommand(MenuItemCallback, menuCommandId);
+                mcs.AddCommand(menuItem);
                 // Create the command for the tool window
                 var toolwndCommandId = new CommandID(GuidList.guid1selfVisualStudioExtensionCmdSet, (int)PkgCmdIDList.cmdid1selfTool);
                 var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
-                mcs.AddCommand( menuToolWin );
+                mcs.AddCommand(menuToolWin);
             }
 
             InitializeSendingBuildEvents();
@@ -172,7 +173,7 @@ namespace N1self.C1selfVisualStudioExtension
             if (isOn == false)
                 return;
 
-            if(currentWindow.Count == 0)
+            if (currentWindow.Count == 0)
             {
                 return;
             }
@@ -194,7 +195,7 @@ namespace N1self.C1selfVisualStudioExtension
             location["long"] = longitude;
             activityEvent["location"] = location;
 
-            activityEvent["actionTags"] = new JArray(new object[] {"Develop"});
+            activityEvent["actionTags"] = new JArray(new object[] { "Develop" });
             activityEvent["objectTags"] = new JArray(new object[] { "Computer", "Software" });
 
             JObject properties = new JObject();
@@ -222,15 +223,15 @@ namespace N1self.C1selfVisualStudioExtension
             });
         }
 
-        private void InitializeSendingBuildEvents()
+        private async void InitializeSendingBuildEvents()
         {
             Debug.WriteLine(CultureInfo.CurrentCulture.ToString(), "Entering Initialize() of: {0}", this);
-         
+
             const string context = "1SELF";
 
             if (Settings.Default.StreamId == "")
             {
-                CreateStream();
+                await CreateStream();
             }
 
             GetLatLong();
@@ -240,10 +241,11 @@ namespace N1self.C1selfVisualStudioExtension
 
             System.Threading.AutoResetEvent autoEvent = new System.Threading.AutoResetEvent(false);
             timer = new System.Threading.Timer((state) =>
-            {   
+            {
                 Tuple<DateTime, string> outEvent;
                 var newEvents = false;
-                while(activityQueue.TryDequeue(out outEvent)){
+                while (activityQueue.TryDequeue(out outEvent))
+                {
                     currentWindow.Add(outEvent);
                     newEvents = true;
                 }
@@ -267,7 +269,7 @@ namespace N1self.C1selfVisualStudioExtension
             autoEvent,
             timerDuration1minutes,
             System.Threading.Timeout.Infinite);
-            
+
 
             var dte = (DTE)GetService(typeof(DTE));
             buildEvents = dte.Events.BuildEvents;
@@ -291,7 +293,7 @@ namespace N1self.C1selfVisualStudioExtension
             buildEvents.OnBuildDone += (scope, action) =>
             {
                 Console.WriteLine(CultureInfo.CurrentCulture.ToString(), "OnBuildDone  ");
-         
+
                 var properties = new JObject();
                 properties["Result"] = buildSucceeded ? "Success" : "Failure";
                 properties["duration"] = (DateTime.Now - buildStartTime).TotalSeconds;
@@ -306,7 +308,7 @@ namespace N1self.C1selfVisualStudioExtension
                 Debug.WriteLine(platform, context);
                 Debug.WriteLine(solutionConfig, context);
                 Debug.WriteLine(success, context);
-                buildSucceeded &= success;  
+                buildSucceeded &= success;
             };
 
             documentEvents.DocumentClosing += (Document doc) =>
@@ -356,63 +358,63 @@ namespace N1self.C1selfVisualStudioExtension
 
             findEvents.FindDone += (vsFindResult Result, bool Cancelled) =>
             {
- 	            trackActivity("find done");
+                trackActivity("find done");
             };
 
             miscFilesEvents.ItemAdded += (ProjectItem ProjectItem) =>
             {
- 	            trackActivity("item added");
-            }; 
-            
-            
+                trackActivity("item added");
+            };
+
+
             miscFilesEvents.ItemRemoved += (ProjectItem ProjectItem) =>
             {
- 	            trackActivity("item removed");
+                trackActivity("item removed");
             };
-            
+
             miscFilesEvents.ItemRenamed += (ProjectItem projectItem, string oldName) =>
             {
- 	            trackActivity("item renamed");
+                trackActivity("item renamed");
             };
-            
+
             selectionEvents.OnChange += () =>
             {
                 trackActivity("selection change");
             };
-            
+
             solutionEvents.Opened += () =>
             {
- 	            trackActivity("solution opened");
+                trackActivity("solution opened");
             };
-            
+
             solutionEvents.ProjectAdded += (Project Project) =>
             {
- 	            trackActivity("project added");
+                trackActivity("project added");
             };
 
             solutionEvents.ProjectRemoved += (Project Project) =>
             {
- 	            trackActivity("project removed");
+                trackActivity("project removed");
             };
-            
+
             solutionEvents.ProjectRenamed += (Project project, string oldname) =>
             {
- 	            trackActivity("project renamed");
+                trackActivity("project renamed");
             };
 
             solutionEvents.Renamed += (string oldname) =>
             {
- 	            trackActivity("solution renamed");
+                trackActivity("solution renamed");
             };
-            
+
             solutionItemsEvents.ItemAdded += (ProjectItem ProjectItem) =>
             {
- 	            trackActivity("solution item added");
+                trackActivity("solution item added");
             };
-            
+
             solutionItemsEvents.ItemRemoved += (ProjectItem ProjectItem) =>
             {
- 	            trackActivity("solution item removed");
+                trackActivity("solution item removed");
             };
 
             windowEvents.WindowActivated += (Window GotFocus, Window LostFocus) =>
@@ -424,7 +426,7 @@ namespace N1self.C1selfVisualStudioExtension
             {
                 trackActivity("Line Changed");
             };
-            
+
             //dte.Events.SolutionItemsEvents.ItemRenamed += (ProjectItem ProjectItem) =>
             //{
             //    trackActivity("solution item renamed");
@@ -443,24 +445,24 @@ namespace N1self.C1selfVisualStudioExtension
             var client = new HttpClient();
             client.GetAsync("http://api.1self.co/quantifieddev/extensions/message").ContinueWith(
                 getTask =>
+                {
+                    try
                     {
-                        try
+                        HttpResponseMessage response = getTask.Result;
+                        if (response.StatusCode == HttpStatusCode.OK)
                         {
-                            HttpResponseMessage response = getTask.Result;
-                            if (response.StatusCode == HttpStatusCode.OK)
-                            {
-                                var rawContent = response.Content.ReadAsStringAsync().Result;
-                                var content = JObject.Parse(rawContent);
-                                Settings.Default.InfoText = content["text"].ToString();
-                                Settings.Default.Save();
+                            var rawContent = response.Content.ReadAsStringAsync().Result;
+                            var content = JObject.Parse(rawContent);
+                            Settings.Default.InfoText = content["text"].ToString();
+                            Settings.Default.Save();
 
-                            }
                         }
-                        catch (Exception e)
-                        {
-                            WriteToOutput("Couldn't get the information message.");
-                        }
-                    });
+                    }
+                    catch (Exception e)
+                    {
+                        WriteToOutput("Couldn't get the information message.");
+                    }
+                });
         }
 
         private void GetLatLong()
@@ -471,7 +473,7 @@ namespace N1self.C1selfVisualStudioExtension
                 longitude = Settings.Default.Longitude;
                 return;
             }
-           
+
             if (isOn == false)
                 return;
 
@@ -528,9 +530,9 @@ namespace N1self.C1selfVisualStudioExtension
             var buildEvent = new JObject();
             buildEvent["dateTime"] = DateTime.UtcNow.ToString("o");
 
-            var location = new JObject(); 
+            var location = new JObject();
             location["lat"] = latitude;
-            location["long"] = longitude; 
+            location["long"] = longitude;
             buildEvent["location"] = location;
 
 
@@ -557,9 +559,9 @@ namespace N1self.C1selfVisualStudioExtension
                 }
                 catch (Exception)
                 {
-                    WriteToOutput("1self: Couldn't send build event");                           
+                    WriteToOutput("1self: Couldn't send build event");
                 }
-                   
+
             });
         }
 
@@ -578,8 +580,7 @@ namespace N1self.C1selfVisualStudioExtension
             pane.OutputString(string.Format("1self: {0}\r\n", message));
         }
 
-
-        private void CreateStream()
+        private async Task<bool> CreateStream()
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "app-id-1ed9e3e621a063ec8679a885b4e1ec4b:app-secret-3e654db1eeb607bfdf26a0372cf043d27cca985c6a3598519820b52f5eb211b7");
@@ -593,20 +594,20 @@ namespace N1self.C1selfVisualStudioExtension
                     Content = new StringContent("{}")
                 };
 
-                var response = client.SendAsync(request);
-                result = response.Result;
-                
+                var response = await client.SendAsync(request);
+                result = response;
+
             }
             catch (Exception)
             {
                 isOn = false;
-                return;
+                return false;
             }
 
             if (result.StatusCode != HttpStatusCode.OK)
             {
                 isOn = false;
-                return;
+                return false;
             }
 
             var streamDetails = result.Content.ReadAsStringAsync().Result;
@@ -616,7 +617,7 @@ namespace N1self.C1selfVisualStudioExtension
             Settings.Default.ReadToken = jsonStream.GetValue("readToken").ToString();
             Settings.Default.Save();
             Debug.WriteLine(streamDetails);
+            return true;
         }
-
     }
 }
